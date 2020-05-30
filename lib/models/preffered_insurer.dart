@@ -14,6 +14,7 @@ class PreferedInsurer {
       "AAR Insurance",
       "St Catherine Insurance",
       "International medical link"
+      "Life Link"
     ]);
   }
 
