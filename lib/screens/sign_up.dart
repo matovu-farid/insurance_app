@@ -210,28 +210,29 @@ class Signup extends StatelessWidget {
 //                ),
               //-----------------------------------------------------------------------------------------------------------------------
 
-                SizedBox(
-                  height: 50,
-                  child: StreamBuilder<String>(
-                    stream: bloc.stream,
-                    builder:  (context, snapshot) {
+                // SizedBox(
+                //   height: 50,
+                //   child: StreamBuilder<String>(
+                //     stream: bloc.stream,
+                //     builder:  (context, snapshot) {
 
-                      while(snapshot.connectionState==ConnectionState.active)
-                      {widgetList.add(FlatButton(child: Text(snapshot.data??"Waiting..."),onPressed: ()=>{},));
-                        return  FlatButton(child: Text(snapshot.data??"Waiting..."));}
-                      return CustomScrollView(
+                //       while(snapshot.connectionState==ConnectionState.active)
+                //       {widgetList.add(FlatButton(child: Text(snapshot.data??"Waiting..."),onPressed: ()=>{},));
+                //         return  FlatButton(child: Text(snapshot.data??"Waiting..."));}
+                //       return CustomScrollView(
 
-                       slivers: [SliverToBoxAdapter(
+                //        slivers: [SliverToBoxAdapter(
 
-                         child:Column(children:widgetList, ))]);
-                    }
-                  )
+                //          child:Column(children:widgetList, ))]);
+                //     }
+                //   )
 
-                ),
+                // ),
+                //----------------------------------------------------------------------------------------------------
 
-                SizedBox(
-                  height: 10,
-                ),
+                // SizedBox(
+                //   height: 10,
+                // ),
                 _emailfields,
                 SizedBox(
                   height: 10,
