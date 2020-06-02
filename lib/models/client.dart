@@ -36,7 +36,7 @@ class ClientData {
 
   @override
   String toString() {
-    return "'Name : $_name \n Age Bracket : $_ageBracket \n Phone number : $_phoneNumber \n Gender $_gender \n Type of Insurance : $_typeOfInsurance"
+    return "'Name : $_name \n Age Bracket : $_ageBracket \n Email : $_emailAddress \n Phone number : $_phoneNumber \n Gender $_gender \n Type of Insurance : $_typeOfInsurance"
         "\n Category of Insurance : $_categoryOfInsurance \n Prefered Insurer : $_preffredInsurer' ";
   }
 

@@ -92,8 +92,8 @@ class SignupModel extends Model {
           .toList();
 
 
-//  static List<String> get preffredListHelper =>
-//      PreferedInsurer().prefferedInsList;
+ static List<String> get preffredListHelper =>
+     PreferedInsurer().prefferedInsList;
 
 //  Type
 
@@ -136,10 +136,10 @@ class SignupModel extends Model {
         catList = catListHelper(categoryListHelper),
         item = categoryListHelper[0],
 
-//        //prefferred insurer
-//        preferredInsurerList = preffredListHelper,
-//        prefferedInsDropList = prefferedtHelper(preffredListHelper),
-//        preferredInsurerName = preffredListHelper[0],
+       //prefferred insurer
+       preferredInsurerList = preffredListHelper,
+       prefferedInsDropList = prefferedtHelper(preffredListHelper),
+       preferredInsurerName = preffredListHelper[0],
 
 //type of insurance
         insuranceTypeList = typeListHelper,

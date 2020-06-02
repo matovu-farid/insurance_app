@@ -1,5 +1,7 @@
 
 
+import 'dart:ui';
+
 import 'package:family/Bloc/bloc_code.dart';
 import 'package:family/Bloc/email_sender.dart';
 import 'package:family/jsontry.dart';
@@ -7,49 +9,57 @@ import 'package:family/models/client.dart';
 import 'package:family/models/clientList.dart';
 import 'package:family/models/emails_of_bosses.dart';
 import 'package:family/models/insurance_category.dart';
+
 import 'package:family/models/preffered_insurer.dart';
 import 'package:family/models/signup_state.dart';
 import 'package:family/screens/customWigets/customRow.dart';
-import 'package:family/screens/customWigets/customText.dart';
+import 'package:family/screens/customWigets/customRow.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:image/image.dart' as ImageClass;
 
+class Signup extends StatefulWidget {
 
+  @override
+  _SignupState createState() => _SignupState();
+}
 
-
-class Signup extends StatelessWidget {
-
-
-
+class _SignupState extends State<Signup> {
   Gender _gender = Gender.FEMALE;
+
   Bloc bloc = Bloc();
-  ScrollController _controller =ScrollController();
-  addToScoll(ScrollContext context){
 
-  }
+  ScrollController _controller = ScrollController();
 
-
-
-
-
+  addToScoll(ScrollContext context) {}
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  //for widynamic widget
-  var widgetList =  <Widget>[];
-  //fields for client
+  String _item;
+
+  var widgetList = <Widget>[];
+
   String _name;
+
   String _emailAddress;
+
   String _phoneNumber;
+
   String _password;
+
   String _insuranceType;
+
   String _insuranceCategory;
+
   String _preferedInsurer;
+
   String _genderToString;
 
   String get password => _password;
+
   String _ageBracketString;
 
   String get getPassword => _password;
@@ -57,36 +67,82 @@ class Signup extends StatelessWidget {
   set setPassword(String value) {
     _password = value;
   }
+//---------------------------------------------------------------------------------------------------------
+//Custom Name Fields
 
-  CustomRow _namefields = CustomRow(title: "Name",obscureText1: false,icon: Icon(Icons.title),error: "Enter full name",);
-  CustomRow _passwordfields = CustomRow(title:"Password",obscureText1: true, );
-  CustomRow _emailfields = CustomRow(title:"Email",icon: Icon(Icons.mail),obscureText1: false,error: "Please email",);
-  CustomRow _phoneNumberlfields = CustomRow(title:"Phone number",icon:Icon(Icons.phone_android),obscureText1: false,error: "Enter phone number",);
+  CustomRow _namefields = CustomRow(
+    title: "Name",
+    obscureText1: false,
+    icon: Icon(Icons.supervised_user_circle),
+    error: "Enter full name",
+    validate:(value)=>value.isEmpty?"Enter full name":null,
+    textInputType: TextInputType.text,
+  );
+  //--------------------------------------------------------------------------------------------------------
 
-  addToListandSendEmail(){
-  ClientData client= ClientData(_name,_ageBracketString,_genderToString,_insuranceType,_emailAddress,_phoneNumber,_insuranceCategory,_preferedInsurer);
-  ClientList.clientList.add(client);
-  CustomEmailSender(client).send();
+  // CustomRow _passwordfields = CustomRow(
+  //   title: "Password",
+  //   obscureText1: true,
+  // );
+//--------------------------------------------------------------------------------------------------------
+//custom emailFields
+  CustomRow _emailfields = CustomRow(
+    textInputType: TextInputType.emailAddress,
+    title: "Email",
+    icon: Icon(Icons.mail),
+    obscureText1: false,
+    error: "Enter a valid email",
+    validate:(value)=>value.isEmpty?"Enter a valid email":null,
+
+
+  );
+  //---------------------------------------------------------------------------------------------------------
+//Custom phone number fields
+  CustomRow _phoneNumberlfields = CustomRow(
+    textInputType: TextInputType.number,
+    title: "Phone number",
+    icon: Icon(Icons.phone_android),
+    obscureText1: false,
+    error: "Enter phone number",
+    validate:(value)=>value.isEmpty?"Enter phone number":null,
+  );
+//-----------------------------------------------------------------------------------------------
+//Method to send an email
+  addToListandSendEmail() {
+    ClientData client = ClientData(
+        _name,
+        _ageBracketString,
+        _genderToString,
+        _insuranceType,
+        _emailAddress,
+        _phoneNumber,
+        _insuranceCategory,
+        _preferedInsurer);
+    ClientList.clientList.add(client);
+    CustomEmailSender(client).send();
+    
   }
-
+  //-------------------------------------------------------------------------------------------------
+// Method to submit and validate form fields
   submit(BuildContext context) {
-    formKey.currentState.save();
+    FormState formstate= formKey.currentState;
+    formstate.validate();
+    formstate.save();
+
 
     _name = _namefields.getText;
     _emailAddress = _emailfields.getText;
-    _password = _passwordfields.getText;
+    // _password = _passwordfields.getText;
     _phoneNumber = _phoneNumberlfields.getText;
 
 
-    if (_name.isEmpty ||
-        _phoneNumber.isEmpty ||
-        _emailAddress.isEmpty
-        ) ;
-    Navigator.of(context).pushNamed("/Login");
-    addToListandSendEmail();
+
+    if (_name.isNotEmpty && _phoneNumber.isNotEmpty && _emailAddress.isEmpty){
+      Navigator.of(context).pushNamed("/Login");
+    addToListandSendEmail();}
 
   }
-
+  //-------------------------------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -100,55 +156,29 @@ class Signup extends StatelessWidget {
           backgroundColor: Colors.deepPurple,
           label: Text("Submit"),
         ),
-
-        body: CustomScrollView(
-
-          slivers: [
-            SliverAppBar(
-              flexibleSpace: SafeArea(child: SizedBox(height: 10,)),
-              centerTitle: true,
-              pinned: true,
-              primary: true,
-              snap: true,
-
-
-              backgroundColor: Colors.deepPurple,
-              expandedHeight: 100,
-              title: Center(child: Text("QUOTATION REQUEST")),
-              floating: true,
-
-            ),
-            SliverList(delegate: SliverChildListDelegate(
+        body: CustomScrollView(slivers: [
+          SliverAppBar(
+            flexibleSpace: SafeArea(
+                child: SizedBox(
+              height: 10,
+            )),
+            centerTitle: true,
+            pinned: true,
+            primary: true,
+            snap: true,
+            backgroundColor: Colors.deepPurple,
+            expandedHeight: 100,
+            title: Center(child: Text("QUOTATION REQUEST")),
+            floating: true,
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
               [
                 _namefields,
                 SizedBox(
                   height: 10,
                 ),
-//                ScopedModelDescendant<SignupModel>(
-//                  builder:
-//                      (BuildContext context, Widget child, SignupModel model) {
-//                    return Row(
-//                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                      children: <Widget>[
-//
-//
-//                        Expanded(
-//                          child: DropdownButtonFormField<String>(
-//                            decoration: InputDecoration(prefixText: "Age Bracket    ",filled: true,enabled: false),
-//                            value: model.ageBracket,
-//                            items: model.ageDropBracket,
-//
-//                            onChanged: (item1) => model.onAgeChanged(item1),
-//                            onSaved: (ageBracketGot) =>
-//                            _ageBracketString = ageBracketGot,
-//                          ),
-//                        ),
-//                      ],
-//                    );
-//                  },
-
-//                ),
-              //-------------------------------------------------------------------------------------
+                //--------------------------------------------------------------------------------------------------
 
 //              SizedBox(
 //                height: 25,
@@ -170,7 +200,7 @@ class Signup extends StatelessWidget {
 //                  },),
 //                ]),
 //              ),
-              //---------------------------------------------------------------------------------
+                //---------------------------------------------------------------------------------
 //                SizedBox(
 //                  height: 300,
 //                  child: StreamBuilder<String>(
@@ -208,8 +238,29 @@ class Signup extends StatelessWidget {
 //
 
 //                ),
-              //-----------------------------------------------------------------------------------------------------------------------
-
+                //-----------------------------------------------------------------------------------------------------------------------
+//TODO turn the stream from to a streamList of Images
+//                 StreamBuilder(
+//                   stream: Logo().streamOfImages(),
+//                   builder: (context, snapshot) {
+//                     return ListCombo<String>(
+//                       child: const Padding(
+//                         padding: EdgeInsets.all(16),
+//                         child: Text('Combo child'),
+//                       ),
+//                       getList: () async {
+//                         await Future.delayed(const Duration(milliseconds: 500));
+//
+//                         return ['Item1', 'Item2', 'Item3'];
+//                       },
+//                       itemBuilder: (context, parameters, item) =>
+//                           ListTile(title: Text(item)),
+//                       onItemTapped: (item) {},
+//                     );
+//                   },
+//                 ),
+                //---------------------------------------------------------------------------------------------
+                //----------------------------for the stream
                 // SizedBox(
                 //   height: 50,
                 //   child: StreamBuilder<String>(
@@ -228,7 +279,27 @@ class Signup extends StatelessWidget {
                 //   )
 
                 // ),
-                //----------------------------------------------------------------------------------------------------
+                //--------------------------------------------------------------------------------------------
+                // SizedBox(
+                //   height: 50,
+                //   child: StreamBuilder<Map<String,Image>>(
+                //     stream: Logo().streamOfImages(),
+                //     builder:  (context, snapshot) {
+
+                //       while(snapshot.connectionState==ConnectionState.active)
+                //       {widgetList.add(FlatButton(child: Text(snapshot.data.keys.first??"Waiting..."),onPressed: ()=>{},));
+                //         return  FlatButton(child: Text(snapshot.data.keys.first??"Waiting..."));}
+                //       return CustomScrollView(
+
+                //        slivers: [SliverToBoxAdapter(
+
+                //          child:Column(children:widgetList, ))]);
+                //     }
+                //   )
+
+                // ),
+                //--------------------------------------------------------------------------------------------
+                //email
 
                 // SizedBox(
                 //   height: 10,
@@ -237,10 +308,14 @@ class Signup extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
+                //----------------------------------------------------------------------------------------
+                //phone
                 _phoneNumberlfields,
                 SizedBox(
                   height: 10,
                 ),
+                //-------------------------------------------------------------------
+                //male radio button
                 Row(
                   children: <Widget>[
                     SizedBox(
@@ -258,6 +333,8 @@ class Signup extends StatelessWidget {
                             );
                           },
                         )),
+                    //-----------------------------------------------------------------------
+                    //radio button
                     Expanded(
                       child: SizedBox(
                           width: 200,
@@ -277,6 +354,26 @@ class Signup extends StatelessWidget {
                     ),
                   ],
                 ),
+                //----------------------------------------------------------------------------------------
+                // //data from fire store
+                // StreamBuilder<QuerySnapshot>(
+                //   stream: Firestore.instance.collection("preffered_insurer").snapshots(),
+                //   builder:(_,snapshot){
+                //     List<DropdownMenuItem> listofDropdownItems;
+                //     if(snapshot.hasData){
+                //      for(int i;i<snapshot.data.documents.length;i++){
+                //        DocumentSnapshot docSnapshot = snapshot.data.documents[i] ;
+                //        listofDropdownItems.add(DropdownMenuItem(
+                //          value:docSnapshot.documentID,
+                //          child: Text(docSnapshot.documentID),));
+
+                //      }
+
+                //     }
+                //     return DropdownButton(items: listofDropdownItems, onChanged: null,value: listofDropdownItems.first,);
+                //   }),
+                //----------------------------------------------------------------------------------------
+                //Form
                 ScopedModelDescendant<SignupModel>(
                   builder:
                       (BuildContext context, Widget child, SignupModel model) {
@@ -284,87 +381,99 @@ class Signup extends StatelessWidget {
                       key: formKey,
                       child: Column(
                         children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: CustomText("Group of insurance"),
+                          //-----------------------------------------------------------------------------------------
+                          //Age
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Expanded(
+                                child: DropdownButtonFormField<String>(
+                                  decoration: InputDecoration(
+                                      hintText: "Age Bracket    ",
+                                      hintStyle: TextStyle(fontSize: 18),
+
+                                      filled: true,
+                                      enabled: false
+
+                                  ),
+                                  
+                                  items: model.ageDropBracket,
+                                  onChanged: (item1) =>
+                                      model.onAgeChanged(item1),
+                                  onSaved: (ageBracketGot) =>
+                                      _ageBracketString = ageBracketGot,
+                                ),
+                              ),
+                            ],
                           ),
 
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: DropdownButtonFormField<String>(
-                              icon: Row(
-                                children: <Widget>[
-                                  Icon(Icons.list),
-                                  SizedBox(
-                                    width: 10,
-                                  )
-                                ],
-                              ),
-                              value: model.item,
-                              items: model.catList,
-                              onChanged: (item1) => model.onChangedItem(item1),
-                              onSaved: (category) =>
-                              insuranceCategory = category,
+                          //------------------------------------------------------------------------------------------
+                          //Category
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                                hintText: "Insurance Category   ",
+                                hintStyle: TextStyle(fontSize: 18),
+                                filled: true,
+                                enabled: false),
+                            icon: Row(
+                              children: <Widget>[
+                                Icon(Icons.arrow_drop_down),
+
+                              ],
                             ),
+                            
+                            items: model.catList,
+                            onChanged: (item1) => model.onChangedItem(item1),
+                            onSaved: (category) => insuranceCategory = category,
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: CustomText("Preferred Insurer"),
-                          ),
+
+                          //-----------------------------------------------------------------------
                           //prefferd insurer
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: DropdownButtonFormField<String>(
-                              value: model.preferredInsurerName,
-                              items: model.prefferedInsDropList,
-                              onChanged: (item1) =>
-                                  model.onPrefferdChanged(item1),
-                              icon: Row(
-                                children: <Widget>[
-                                  Icon(Icons.list),
-                                  SizedBox(
-                                    width: 10,
-                                  )
-                                ],
-                              ),
-                              onSaved: (prefedInsurer) {
-                                _preferedInsurer = prefedInsurer;
-
-                              },
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              hintText: "Prefered Insurer ",
+                              hintStyle: TextStyle(fontSize: 18),
+                              filled: true,
+                              enabled: false,
+                              
+                              
                             ),
+                            
+                            items: model.prefferedInsDropList,
+                            onChanged: (item1) =>
+                                model.onPrefferdChanged(item1),
+                            icon: Row(
+                              children: <Widget>[
+                                Icon(Icons.arrow_drop_down),
+
+                              ],
+                            ),
+                            onSaved: (prefedInsurer) {
+                              _preferedInsurer = prefedInsurer;
+                            },
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: CustomText("Type of Insurance"),
-                          ),
+
+                          //-------------------------------------------------------
                           //type of insurance
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: DropdownButtonFormField<String>(
-                              value: model.insuranceTypeName,
-                              items: model.typDropList,
-                              onChanged: (item1) =>
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                                hintStyle: TextStyle(fontSize: 18),
+                              filled: true,
+                              enabled: false,
+                              hintText: "Type of Insurance"),
 
-                                  model.onTypeChanged(item1),
-                              icon: Row(
-                                children: <Widget>[
-                                  Icon(Icons.list),
-                                  SizedBox(
-                                    width: 10,
-                                  )
-                                ],
-                              ),
-                              onSaved: (type) {
-                                _insuranceType = type;
-                                _genderToString = model.getGender();
-                              },
+                            items: model.typDropList,
+                            onChanged: (item1) => model.onTypeChanged(item1),
+                            icon: Row(
+                              children: <Widget>[
+                                Icon(Icons.arrow_drop_down),
+
+                              ],
                             ),
+                            onSaved: (type) {
+                              _insuranceType = type;
+                              _genderToString = model.getGender();
+                            },
                           ),
                         ],
                       ),
@@ -375,16 +484,12 @@ class Signup extends StatelessWidget {
                   height: 100,
                 ),
               ],
-            ),)
-
-
-
-          ]
-        ),
+            ),
+          )
+        ]),
       ),
     );
   }
-
 
   set name(String value) {
     _name = value;
