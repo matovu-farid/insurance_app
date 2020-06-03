@@ -21,6 +21,8 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:image/image.dart' as ImageClass;
 
+//TODO dispose of all controllers
+
 class Signup extends StatefulWidget {
 
   @override
@@ -28,15 +30,27 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+
   Gender _gender = Gender.FEMALE;
 
   Bloc bloc = Bloc();
 
-  ScrollController _controller = ScrollController();
+   ScrollController _controller ;
 
   addToScoll(ScrollContext context) {}
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    _controller = ScrollController();
+  }
+
+
+  @override
+  void dispose() {
+    _controller.dispose();
+  }
 
   String _item;
 
@@ -534,4 +548,6 @@ class _SignupState extends State<Signup> {
   set insuranceType(String value) {
     _insuranceType = value;
   }
+
+
 }

@@ -33,6 +33,8 @@ class SignupModel extends Model {
   List<DropdownMenuItem<String>> typDropList;
   List<DropdownMenuItem<String>> ageDropBracket;
 
+
+
   int commonRadio = 0;
 
   var genderMapper = {Gender.MALE: 0, Gender.FEMALE: 1};

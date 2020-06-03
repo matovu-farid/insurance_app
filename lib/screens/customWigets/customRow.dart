@@ -34,7 +34,8 @@ class CustomRow extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: TextFormField(
-              autofocus: true,
+              autofocus: false,
+
               textInputAction: TextInputAction.done,
               maxLines: 2,
               minLines: 1,
