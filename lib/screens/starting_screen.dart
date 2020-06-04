@@ -8,13 +8,13 @@ main(List<String> args) {
 }
 
 class StartingScreen extends StatelessWidget {
-  Image image = Image.asset("assets/images/INSURANCE PNG.png");
+  static final Image image = Image.asset("assets/images/INSURANCE PNG.png");
    double endPosition;
 
 
   @override
   Widget build(BuildContext context) {
-    Duration duration = Duration(seconds: 3);
+    Duration duration = Duration(seconds: 10);
     final Ticker _ticker=Ticker((duration){
       Navigator.of(context).pushNamed("/SignUp");
     });

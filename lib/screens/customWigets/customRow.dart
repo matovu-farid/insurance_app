@@ -28,8 +28,7 @@ class CustomRow extends StatelessWidget {
   bool get returnObscure => obscureText1;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       child: Row(
         children: <Widget>[
           Expanded(
@@ -45,17 +44,14 @@ class CustomRow extends StatelessWidget {
               smartQuotesType: SmartQuotesType.enabled,
               maxLengthEnforced: true,
               cursorColor: Colors.greenAccent,
-
-
-
               keyboardType: textInputType,
-
               autovalidate: true,
 
               decoration: InputDecoration(
                 errorStyle: TextStyle(color: Colors.green,decorationStyle: TextDecorationStyle.wavy),
                 enabled: true,
                 filled: true,
+                border: UnderlineInputBorder(borderSide: BorderSide.merge(BorderSide(style: BorderStyle.solid), BorderSide(style: BorderStyle.solid))),
 
                 labelText: title,
                 hintText: hint,
@@ -74,5 +70,4 @@ class CustomRow extends StatelessWidget {
         ],
       ),
     );
-  }
 }
