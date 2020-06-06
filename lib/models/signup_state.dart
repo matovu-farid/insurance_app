@@ -18,7 +18,7 @@ class SignupModel extends Model {
   InsurancetypList insTyp;
 
 
-  String item;
+  String categoryName;
   String preferredInsurerName;
   String insuranceTypeName;
   String ageBracket;
@@ -54,11 +54,7 @@ class SignupModel extends Model {
     notifyListeners();
   }
 
-  onChangedItem(String item1) {
-    item = item1;
-
-    notifyListeners();
-  }
+  onCategoryChanged(String newCategory) => categoryName = newCategory;
 
   onPrefferdChanged(String newPreffed) => preferredInsurerName = newPreffed;
 
@@ -136,7 +132,7 @@ class SignupModel extends Model {
         //category of insurer
         categoryList = categoryListHelper,
         catList = catListHelper(categoryListHelper),
-        item = categoryListHelper[0],
+        categoryName = categoryListHelper[0],
 
        //prefferred insurer
        preferredInsurerList = preffredListHelper,
