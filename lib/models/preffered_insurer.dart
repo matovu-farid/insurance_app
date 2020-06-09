@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:family/models/client.dart';
+
 class PreferedInsurer {
   List<String> _prefferedInsList = List<String>();
 
@@ -19,4 +21,8 @@ class PreferedInsurer {
   }
 
   List<String> get prefferedInsList => _prefferedInsList;
+
+
+
+
 }

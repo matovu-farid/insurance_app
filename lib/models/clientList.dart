@@ -6,9 +6,6 @@ class ClientList{
   static List<ClientData> clientList=List<ClientData>();
 
 
-  StreamController _controller = StreamController();
-
-  Stream _stream;
 
 
 

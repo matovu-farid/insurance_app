@@ -1,8 +1,9 @@
-
-
+//TODO check  erros got fron firebase sign in
 
 import 'package:family/Bloc/bloc_code.dart';
 import 'package:family/Bloc/email_sender.dart';
+import 'package:family/Services/Authentication.dart';
+import 'package:family/Services/loadStream.dart';
 
 import 'package:family/models/client.dart';
 import 'package:family/models/clientList.dart';
@@ -14,6 +15,7 @@ import 'package:family/models/signup_state.dart';
 import 'package:family/screens/customWigets/customRow.dart';
 import 'package:family/screens/customWigets/customRow.dart';
 import 'package:family/screens/starting_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,18 +30,18 @@ import 'package:image/image.dart' as ImageClass;
 //TODO Optimize memory usage
 
 class Signup extends StatefulWidget {
-
   @override
   _SignupState createState() => _SignupState();
 }
 
 class _SignupState extends State<Signup> {
-
   Gender _gender = Gender.FEMALE;
+
+  final List<DropdownMenuItem> listStream = List<DropdownMenuItem>();
 
   Bloc bloc = Bloc();
 
-   ScrollController _controller ;
+  ScrollController _controller;
 
   addToScoll(ScrollContext context) {}
 
@@ -48,7 +50,6 @@ class _SignupState extends State<Signup> {
   TextEditingController _emailController;
   TextEditingController _phoneController;
 
-
   @override
   void initState() {
     _controller = ScrollController();
@@ -56,9 +57,8 @@ class _SignupState extends State<Signup> {
     _emailController = TextEditingController();
     _phoneController = TextEditingController();
   }
+
   final FocusNode _blanknode = FocusNode();
-
-
 
   String _item;
 
@@ -88,10 +88,9 @@ class _SignupState extends State<Signup> {
 
   set setPassword(String value) {
     _password = value;
-
   }
-  //------------------------------------------------------------------------------------------------
 
+  //------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------------
 //Custom Name Fields
@@ -134,7 +133,7 @@ class _SignupState extends State<Signup> {
 //  );
 //-----------------------------------------------------------------------------------------------
 //Method to send an email
-  addToListandSendEmail() {
+  ClientData createClient() {
     ClientData client = ClientData(
         _name,
         _ageBracketString,
@@ -144,35 +143,36 @@ class _SignupState extends State<Signup> {
         _phoneNumber,
         _insuranceCategory,
         _preferedInsurer);
-    ClientList.clientList.add(client);
-    CustomEmailSender(client).send();
 
+    return client;
   }
+
   //----------------------------------------------------------------------------------
   //regex for phone
   Pattern pattern = r'(\d{10})';
 
-
-
   //-------------------------------------------------------------------------------------------------
 // Method to submit and validate form fields
   FormState get formstate => formKey.currentState;
-  submit(BuildContext context) {
 
-
+  submit(BuildContext context) async {
     _name = _nameController.text;
     _emailAddress = _emailController.text;
 
     _phoneNumber = _phoneController.text;
 
-
-    if (formstate.validate()){
+    if (formstate.validate()) {
       formstate.save();
-      Navigator.of(context).popAndPushNamed("/Home");
-    //addToListandSendEmail();
-    }
+      //TODO change it back to popAndpushNamed
+      // Navigator.of(context).pushNamed("/Home");
+      FirebaseUser user = await Authorization().anonSignIn();
 
+      String userId = user.uid;
+      print(userId);
+      sendingToDataBase(createClient(), userId);
+    }
   }
+
   //-------------------------------------------------------------------------------------------------
 
   @override
@@ -191,8 +191,7 @@ class _SignupState extends State<Signup> {
           ),
           body: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: (){
-
+            onTap: () {
               FocusScope.of(context).requestFocus(_blanknode);
             },
             child: CustomScrollView(slivers: [
@@ -207,55 +206,62 @@ class _SignupState extends State<Signup> {
                 snap: true,
                 backgroundColor: Colors.grey[800],
                 expandedHeight: 80,
-
                 title: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                    children:<Widget>[
-
-                  Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                    children:<Widget>[Text("QUOTATION REQUEST"),
-                    SizedBox(width: 60,),
-                    SizedBox(width: 60,height: 60,child: StartingScreen.image,)] )]),
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("QUOTATION REQUEST"),
+                            SizedBox(
+                              width: 60,
+                            ),
+                            SizedBox(
+                              width: 60,
+                              height: 60,
+                              child: StartingScreen.image,
+                            )
+                          ])
+                    ]),
                 floating: true,
               ),
               SliverList(
                 delegate: SliverChildListDelegate(
                   [
-
-                    Builder(builder: (context){
-                    return buildRow(
-                      title: "Name",
-                      context: context,
-                      obscureText1: false,
-                      controller: _nameController,
-                      icon: Icon(FontAwesomeIcons.userNinja),
-                      error: "Enter full name",
-                      validate:(value)=>value.isEmpty?"Enter full name":null,
-                      hint: "John",
-                      maxlength: 50,
-                      textInputType: TextInputType.text, );
-
+                    Builder(builder: (context) {
+                      return buildRow(
+                        title: "Name",
+                        context: context,
+                        obscureText1: false,
+                        controller: _nameController,
+                        icon: Icon(FontAwesomeIcons.userNinja),
+                        error: "Enter full name",
+                        validate: (value) =>
+                            value.isEmpty ? "Enter full name" : null,
+                        hint: "John",
+                        maxlength: 50,
+                        textInputType: TextInputType.text,
+                      );
                     }),
                     //email
-                    Builder(builder: (context){
-
+                    Builder(builder: (context) {
                       return buildRow(
                           textInputType: TextInputType.emailAddress,
-                        context: context,
-                        controller: _emailController,
-                        title: "Email",
-                        icon: Icon(Icons.mail),
-                        obscureText1: false,
-                        error: "Enter a valid email",
-                        hint: "eg. john.@gmail.com",
-                        maxlength: 60,
-
-                        validate:(value)=>(!value.contains("@"))?"Enter a valid email":null);
-
+                          context: context,
+                          controller: _emailController,
+                          title: "Email",
+                          icon: Icon(Icons.mail),
+                          obscureText1: false,
+                          error: "Enter a valid email",
+                          hint: "eg. john.@gmail.com",
+                          maxlength: 60,
+                          validate: (value) => (!value.contains("@"))
+                              ? "Enter a valid email"
+                              : null);
                     }),
-                    Builder(builder: (context){
-                      return buildRow(textInputType: TextInputType.number,
+                    Builder(builder: (context) {
+                      return buildRow(
+                        textInputType: TextInputType.number,
                         context: context,
                         controller: _phoneController,
                         title: "Phone number",
@@ -264,7 +270,12 @@ class _SignupState extends State<Signup> {
                         hint: "eg. 07XXXXXXXX",
                         obscureText1: false,
                         error: "Enter phone number",
-                        validate:(value)=>((!(RegExp(pattern).hasMatch(value)))||!(value.startsWith("07")))?"Enter a valid phone number":null,);
+                        validate: (value) =>
+                            ((!(RegExp(pattern).hasMatch(value))) ||
+                                    !(value.startsWith("07")))
+                                ? "Enter a valid phone number"
+                                : null,
+                      );
                     }),
                     //--------------------------------------------------------------------------------------------------
 
@@ -393,7 +404,6 @@ class _SignupState extends State<Signup> {
                     //   height: 10,
                     // ),
 
-
                     SizedBox(
                       height: 10,
                     ),
@@ -402,7 +412,6 @@ class _SignupState extends State<Signup> {
                     //male radio button
                     Row(
                       children: <Widget>[
-
                         SizedBox(
                             width: 200,
                             height: 60,
@@ -463,8 +472,8 @@ class _SignupState extends State<Signup> {
                     //----------------------------------------------------------------------------------------
                     //Form
                     ScopedModelDescendant<SignupModel>(
-                      builder:
-                          (BuildContext context, Widget child, SignupModel model) {
+                      builder: (BuildContext context, Widget child,
+                          SignupModel model) {
                         return Column(
                           children: <Widget>[
                             //-----------------------------------------------------------------------------------------
@@ -473,20 +482,19 @@ class _SignupState extends State<Signup> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Expanded(
-
                                   child: DropdownButtonFormField<String>(
-                                    validator:(value)=>value.isEmpty?"Choose age bracket":null,
+                                    validator: (value) => value.isEmpty
+                                        ? "Choose age bracket"
+                                        : null,
                                     decoration: InputDecoration(
-                                        hintText: "Age Bracket    ",
-                                        hintStyle: TextStyle(fontSize: 18),
-
-
-                                        filled: true,
-                                        enabled: true,
-                                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
-
+                                      hintText: "Age Bracket    ",
+                                      hintStyle: TextStyle(fontSize: 18),
+                                      filled: true,
+                                      enabled: true,
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.red)),
                                     ),
-
                                     items: model.ageDropBracket,
                                     onChanged: (item1) =>
                                         model.onAgeChanged(item1),
@@ -500,57 +508,90 @@ class _SignupState extends State<Signup> {
                             //------------------------------------------------------------------------------------------
                             //Category
                             DropdownButtonFormField<String>(
-                              validator:(value)=>value.isEmpty?"Choose an insurance category":null,
+                              validator: (value) => value.isEmpty
+                                  ? "Choose an insurance category"
+                                  : null,
                               decoration: InputDecoration(
-                                  hintText: "Insurance Category   ",
-
-                                  hintStyle: TextStyle(fontSize: 18),
-                                  filled: true,
-                                  enabled: true,
-                                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+                                hintText: "Insurance Category   ",
+                                hintStyle: TextStyle(fontSize: 18),
+                                filled: true,
+                                enabled: true,
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.red)),
                               ),
-
                               icon: Icon(Icons.arrow_drop_down),
-
                               items: model.catList,
-                              onChanged: (item1) => model.onCategoryChanged(item1),
-                              onSaved: (category) => insuranceCategory = category,
+                              onChanged: (item1) =>
+                                  model.onCategoryChanged(item1),
+                              onSaved: (category) =>
+                                  insuranceCategory = category,
                             ),
 
                             //-----------------------------------------------------------------------
                             //prefferd insurer
-                            DropdownButtonFormField<String>(
-                              validator:(value)=>value.isEmpty?"Choose a preferd insurer":null,
-                              decoration: InputDecoration(
+//                            DropdownButtonFormField<String>(
+//                              validator: (value) => value.isEmpty
+//                                  ? "Choose a preferd insurer"
+//                                  : null,
+//                              decoration: InputDecoration(
+//                                hintText: "Prefered Insurer ",
+//                                hintStyle: TextStyle(fontSize: 18),
+//                                filled: true,
+//                                enabled: true,
+//                                enabledBorder: OutlineInputBorder(
+//                                    borderSide: BorderSide(color: Colors.red)),
+//                              ),
+//                              items: model.prefferedInsDropList,
+//                              onChanged: (item1) =>
+//                                  model.onPrefferdChanged(item1),
+//                              icon: Icon(Icons.arrow_drop_down),
+//                              onSaved: (prefedInsurer) {
+//                                _preferedInsurer = prefedInsurer;
+//                              },
+//                            ),
+                            //From stream
+                            StreamBuilder<DropdownMenuItem>(
+                                stream: loadSingle(),
+                                builder: (context, snapshot) {
 
-                                hintText: "Prefered Insurer ",
-                                hintStyle: TextStyle(fontSize: 18),
-                                filled: true,
-                                enabled: true,
-                                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
-                              ),
+
+                                  while(snapshot.connectionState!=ConnectionState.done){
+                                    if(snapshot.connectionState==ConnectionState.active)
+
+                                      listStream.add(snapshot.data);
+                                  }
+
+                                    return DropdownButtonFormField(onChanged: (value) {  },items:  listStream,
+                                      validator: (value) => value.isEmpty
+                                          ? "Choose a preferred insurer"
+                                          : null,
+                                      decoration: InputDecoration(
+                                        hintText: "Preferred Insurer ",
+                                        hintStyle: TextStyle(fontSize: 18),
+                                        filled: true,
+                                        enabled: true,
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.red)),
+                                      ),);
 
 
-                              items: model.prefferedInsDropList,
-                              onChanged: (item1) =>
-                                  model.onPrefferdChanged(item1),
-                              icon: Icon(Icons.arrow_drop_down),
-                              onSaved: (prefedInsurer) {
-                                _preferedInsurer = prefedInsurer;
-                              },
-                            ),
+
+                                }),
 
                             //-------------------------------------------------------
                             //type of insurance
                             DropdownButtonFormField<String>(
-                              validator:(value)=>value.isEmpty?"Choose type of Insurer":null,
+                              validator: (value) => value.isEmpty
+                                  ? "Choose type of Insurer"
+                                  : null,
                               decoration: InputDecoration(
-                                  hintStyle: TextStyle(fontSize: 18),
+                                hintStyle: TextStyle(fontSize: 18),
                                 filled: true,
                                 enabled: true,
                                 hintText: "Type of Insurance",
-                                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),),
-
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.red)),
+                              ),
                               items: model.typDropList,
                               onChanged: (item1) => model.onTypeChanged(item1),
                               icon: Icon(Icons.arrow_drop_down),
@@ -558,6 +599,11 @@ class _SignupState extends State<Signup> {
                                 _insuranceType = type;
                                 _genderToString = model.getGender();
                               },
+                            ),
+                            RaisedButton(
+                              onPressed: () =>
+                                  Navigator.pushNamed(context, "/Home"),
+                              child: Text("Debug Button"),
                             ),
                           ],
                         );
@@ -617,17 +663,21 @@ class _SignupState extends State<Signup> {
   }
 
   set insuranceType(String value) {
-
     _insuranceType = value;
   }
-  Widget buildRow({BuildContext context,
+
+  Widget buildRow({
+    BuildContext context,
     int maxlength,
     TextEditingController controller,
-    bool obscureText1 ,
+    bool obscureText1,
     Icon icon,
     String error,
     String hint,
-    FormFieldValidator<String> validate, TextInputType textInputType, String title,}) {
+    FormFieldValidator<String> validate,
+    TextInputType textInputType,
+    String title,
+  }) {
     FocusNode node = FocusNode();
 
     return Container(
@@ -638,14 +688,11 @@ class _SignupState extends State<Signup> {
             Expanded(
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: (){
+                onTap: () {
                   FocusScope.of(context).requestFocus(node);
                 },
                 child: TextFormField(
                   autofocus: true,
-
-
-
                   textInputAction: TextInputAction.done,
                   maxLength: maxlength,
                   maxLines: 2,
@@ -653,23 +700,22 @@ class _SignupState extends State<Signup> {
                   enableSuggestions: true,
                   toolbarOptions: ToolbarOptions(
                       copy: true, cut: true, paste: true, selectAll: true),
-
                   maxLengthEnforced: true,
                   enableInteractiveSelection: true,
-
                   cursorColor: Colors.greenAccent,
                   keyboardType: textInputType,
-
                   validator: validate,
-
                   decoration: InputDecoration(
                       errorStyle: TextStyle(
-                        color:Colors.red[500],
+                          color: Colors.red[500],
                           decorationStyle: TextDecorationStyle.wavy),
                       enabled: true,
                       filled: true,
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.green,width: 3)),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red,width: 3)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.green, width: 3)),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 3)),
                       labelText: title,
                       hintText: hint,
                       hintStyle: TextStyle(color: Colors.grey),
@@ -689,12 +735,13 @@ class _SignupState extends State<Signup> {
       ),
     );
   }
+
   @override
   void dispose() {
+    super.dispose();
     _controller.dispose();
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
   }
-
 }

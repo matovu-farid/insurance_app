@@ -39,6 +39,17 @@ class ClientData {
     return "'Name : $_name \n Age Bracket : $_ageBracket \n Email : $_emailAddress \n Phone number : $_phoneNumber \n Gender $_gender \n Type of Insurance : $_typeOfInsurance"
         "\n Category of Insurance : $_categoryOfInsurance \n Prefered Insurer : $_preffredInsurer' ";
   }
+  Map<String,String>  get clientInfo{
+    return{
+    'Name' : _name, 
+     'Age Bracket' : _ageBracket, 
+      'Email' : _emailAddress, 
+       'Phone number' : _phoneNumber, 
+        'Gender' : _gender ,
+         'Type of Insurance' : _typeOfInsurance,
+        'Category of Insurance' : _categoryOfInsurance ,
+         'Prefered Insurer' : _preffredInsurer,
+  };}
 
   String get preffredInsurer => _preffredInsurer;
 }
