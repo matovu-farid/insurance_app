@@ -117,11 +117,12 @@ class _SignupState extends State<Signup> {
     _emailAddress = _emailController.text;
 
     _phoneNumber = _phoneController.text;
+    formstate.save();
 
     if (formstate.validate()) {
-      formstate.save();
+
       //TODO change it back to popAndpushNamed
-      // Navigator.of(context).pushNamed("/Home");
+       Navigator.of(context).popAndPushNamed("/Home");
       FirebaseUser user = await Authorization().anonSignIn();
 
       String userId = user.uid;
@@ -386,7 +387,6 @@ class _SignupState extends State<Signup> {
                             Container(
                               decoration: BoxDecoration(
                                   border: BorderDirectional(
-
                                     bottom: BorderSide(width: 4, color: Colors.black12),
                                     top: BorderSide(width: 4, color: Colors.green),
                               ),),
