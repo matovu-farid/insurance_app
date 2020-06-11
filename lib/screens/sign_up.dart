@@ -23,6 +23,7 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:image/image.dart' as ImageClass;
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 //TODO dispose of all controllers
 //TODO make sure someone cant submit until all field are filled
@@ -35,6 +36,7 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+  String selectedInsurer;
   Gender _gender = Gender.FEMALE;
 
   final List<DropdownMenuItem> listStream = List<DropdownMenuItem>();
@@ -86,52 +88,6 @@ class _SignupState extends State<Signup> {
 
   String get getPassword => _password;
 
-  set setPassword(String value) {
-    _password = value;
-  }
-
-  //------------------------------------------------------------------------------------------------
-
-//---------------------------------------------------------------------------------------------------------
-//Custom Name Fields
-
-//  CustomRow _namefields = CustomRow(
-//    title: "Name",
-//    obscureText1: false,
-//    icon: Icon(Icons.supervised_user_circle),
-//    error: "Enter full name",
-//    validate:(value)=>value.isEmpty?"Enter full name":null,
-//    textInputType: TextInputType.text,
-//  );
-  //--------------------------------------------------------------------------------------------------------
-
-  // CustomRow _passwordfields = CustomRow(
-  //   title: "Password",
-  //   obscureText1: true,
-  // );
-//--------------------------------------------------------------------------------------------------------
-////custom emailFields
-//  CustomRow _emailfields = CustomRow(
-//    textInputType: TextInputType.emailAddress,
-//    title: "Email",
-//    icon: Icon(Icons.mail),
-//    obscureText1: false,
-//    error: "Enter a valid email",
-//    validate:(value)=>value.isEmpty?"Enter a valid email":null,
-//
-//
-//  );
-//  //---------------------------------------------------------------------------------------------------------
-////Custom phone number fields
-//  CustomRow _phoneNumberlfields = CustomRow(
-//    textInputType: TextInputType.number,
-//    title: "Phone number",
-//    icon: Icon(Icons.phone_android),
-//    obscureText1: false,
-//    error: "Enter phone number",
-//    validate:(value)=>value.isEmpty?"Enter phone number":null,
-//  );
-//-----------------------------------------------------------------------------------------------
 //Method to send an email
   ClientData createClient() {
     ClientData client = ClientData(
@@ -156,6 +112,7 @@ class _SignupState extends State<Signup> {
   FormState get formstate => formKey.currentState;
 
   submit(BuildContext context) async {
+    PreferedInsurer().sendingInsurers();
     _name = _nameController.text;
     _emailAddress = _emailController.text;
 
@@ -279,130 +236,7 @@ class _SignupState extends State<Signup> {
                     }),
                     //--------------------------------------------------------------------------------------------------
 
-//              SizedBox(
-//                height: 25,
-//                child: CustomScrollView(
-//
-//                  slivers: [StreamBuilder<String>(
-//
-//                    stream: PreferedInsurer().outputPreIns.stream,
-//                    builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-//
-//                      return SliverList(delegate: SliverChildBuilderDelegate((context,index){
-//                        return ListView.builder(
-//
-//                            itemBuilder: (_,__){
-//
-//                          return ListTile(title: Text(snapshot.data),);
-//                        });
-//                      }),);
-//                  },),
-//                ]),
-//              ),
-                    //---------------------------------------------------------------------------------
-//                SizedBox(
-//                  height: 300,
-//                  child: StreamBuilder<String>(
-//
-//                        stream: bloc.stream,
-//                        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-//                          if(snapshot.connectionState==ConnectionState.waiting){
-//
-//                            return Text('Waiting....');
-//                          }else if(snapshot.connectionState==ConnectionState.done){
-//                            return ListView.builder(
-//                                itemCount: bloc.list.length,
-//                                itemBuilder: (_,__){
-//
-//                                  return ListTile(title: Text(snapshot.data ?? "Scroll down"),);
-//                                });
-//                            return Text('done');
-//                      }else if (snapshot.connectionState==ConnectionState.active){
-//                            return ListView.builder(
-//                                itemCount: bloc.list.length,
-//                                itemBuilder: (_,__){
-//
-//                                  return ListTile(title: Text(snapshot.data ?? "Scroll down"),);
-//                                });
-//                          }
-//                          else{
-//                            return Text("Error");
-//                          }
-//
-//
-//
-//
-//                        },),
-//
-//
-
-//                ),
                     //-----------------------------------------------------------------------------------------------------------------------
-//TODO turn the stream from to a streamList of Images
-//                 StreamBuilder(
-//                   stream: Logo().streamOfImages(),
-//                   builder: (context, snapshot) {
-//                     return ListCombo<String>(
-//                       child: const Padding(
-//                         padding: EdgeInsets.all(16),
-//                         child: Text('Combo child'),
-//                       ),
-//                       getList: () async {
-//                         await Future.delayed(const Duration(milliseconds: 500));
-//
-//                         return ['Item1', 'Item2', 'Item3'];
-//                       },
-//                       itemBuilder: (context, parameters, item) =>
-//                           ListTile(title: Text(item)),
-//                       onItemTapped: (item) {},
-//                     );
-//                   },
-//                 ),
-                    //---------------------------------------------------------------------------------------------
-                    //----------------------------for the stream
-                    // SizedBox(
-                    //   height: 50,
-                    //   child: StreamBuilder<String>(
-                    //     stream: bloc.stream,
-                    //     builder:  (context, snapshot) {
-
-                    //       while(snapshot.connectionState==ConnectionState.active)
-                    //       {widgetList.add(FlatButton(child: Text(snapshot.data??"Waiting..."),onPressed: ()=>{},));
-                    //         return  FlatButton(child: Text(snapshot.data??"Waiting..."));}
-                    //       return CustomScrollView(
-
-                    //        slivers: [SliverToBoxAdapter(
-
-                    //          child:Column(children:widgetList, ))]);
-                    //     }
-                    //   )
-
-                    // ),
-                    //--------------------------------------------------------------------------------------------
-                    // SizedBox(
-                    //   height: 50,
-                    //   child: StreamBuilder<Map<String,Image>>(
-                    //     stream: Logo().streamOfImages(),
-                    //     builder:  (context, snapshot) {
-
-                    //       while(snapshot.connectionState==ConnectionState.active)
-                    //       {widgetList.add(FlatButton(child: Text(snapshot.data.keys.first??"Waiting..."),onPressed: ()=>{},));
-                    //         return  FlatButton(child: Text(snapshot.data.keys.first??"Waiting..."));}
-                    //       return CustomScrollView(
-
-                    //        slivers: [SliverToBoxAdapter(
-
-                    //          child:Column(children:widgetList, ))]);
-                    //     }
-                    //   )
-
-                    // ),
-                    //--------------------------------------------------------------------------------------------
-                    //email
-
-                    // SizedBox(
-                    //   height: 10,
-                    // ),
 
                     SizedBox(
                       height: 10,
@@ -478,54 +312,54 @@ class _SignupState extends State<Signup> {
                           children: <Widget>[
                             //-----------------------------------------------------------------------------------------
                             //Age
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Expanded(
-                                  child: DropdownButtonFormField<String>(
-                                    validator: (value) => value.isEmpty
-                                        ? "Choose age bracket"
-                                        : null,
-                                    decoration: InputDecoration(
-                                      hintText: "Age Bracket    ",
-                                      hintStyle: TextStyle(fontSize: 18),
-                                      filled: true,
-                                      enabled: true,
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.red)),
-                                    ),
-                                    items: model.ageDropBracket,
-                                    onChanged: (item1) =>
-                                        model.onAgeChanged(item1),
-                                    onSaved: (ageBracketGot) =>
-                                        _ageBracketString = ageBracketGot,
-                                  ),
-                                ),
-                              ],
-                            ),
+//                            Row(
+//                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                              children: <Widget>[
+//                                Expanded(
+//                                  child: DropdownButtonFormField<String>(
+//                                    validator: (value) => value.isEmpty
+//                                        ? "Choose age bracket"
+//                                        : null,
+//                                    decoration: InputDecoration(
+//                                      hintText: "Age Bracket    ",
+//                                      hintStyle: TextStyle(fontSize: 18),
+//                                      filled: true,
+//                                      enabled: true,
+//                                      enabledBorder: OutlineInputBorder(
+//                                          borderSide:
+//                                              BorderSide(color: Colors.red)),
+//                                    ),
+//                                    items: model.ageDropBracket,
+//                                    onChanged: (item1) =>
+//                                        model.onAgeChanged(item1),
+//                                    onSaved: (ageBracketGot) =>
+//                                        _ageBracketString = ageBracketGot,
+//                                  ),
+//                                ),
+//                              ],
+//                            ),
 
                             //------------------------------------------------------------------------------------------
                             //Category
-                            DropdownButtonFormField<String>(
-                              validator: (value) => value.isEmpty
-                                  ? "Choose an insurance category"
-                                  : null,
-                              decoration: InputDecoration(
-                                hintText: "Insurance Category   ",
-                                hintStyle: TextStyle(fontSize: 18),
-                                filled: true,
-                                enabled: true,
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red)),
-                              ),
-                              icon: Icon(Icons.arrow_drop_down),
-                              items: model.catList,
-                              onChanged: (item1) =>
-                                  model.onCategoryChanged(item1),
-                              onSaved: (category) =>
-                                  insuranceCategory = category,
-                            ),
+//                            DropdownButtonFormField<String>(
+//                              validator: (value) => value.isEmpty
+//                                  ? "Choose an insurance category"
+//                                  : null,
+//                              decoration: InputDecoration(
+//                                hintText: "Insurance Category   ",
+//                                hintStyle: TextStyle(fontSize: 18),
+//                                filled: true,
+//                                enabled: true,
+//                                enabledBorder: OutlineInputBorder(
+//                                    borderSide: BorderSide(color: Colors.red)),
+//                              ),
+//                              icon: Icon(Icons.arrow_drop_down),
+//                              items: model.catList,
+//                              onChanged: (item1) =>
+//                                  model.onCategoryChanged(item1),
+//                              onSaved: (category) =>
+//                                  insuranceCategory = category,
+//                            ),
 
                             //-----------------------------------------------------------------------
                             //prefferd insurer
@@ -549,57 +383,103 @@ class _SignupState extends State<Signup> {
 //                                _preferedInsurer = prefedInsurer;
 //                              },
 //                            ),
-                            //From stream
-                            StreamBuilder<DropdownMenuItem>(
-                                stream: loadSingle(),
-                                builder: (context, snapshot) {
+                            Container(
+                              decoration: BoxDecoration(
+                                  border: BorderDirectional(
 
+                                    bottom: BorderSide(width: 4, color: Colors.black12),
+                                    top: BorderSide(width: 4, color: Colors.green),
+                              ),),
+                              child: SearchableDropdown.single(
+                                items: model.ageDropBracket,
+                                hint: "Age bracket",
+                                searchHint: "Age bracket",
+                                onChanged: (age) {
+                                  _ageBracketString = age;
+                                  model.onAgeChanged(age);
+                                },
+                                isExpanded: true,
+                              ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: BorderDirectional(
 
-                                  while(snapshot.connectionState!=ConnectionState.done){
-                                    if(snapshot.connectionState==ConnectionState.active)
+                                  bottom: BorderSide(width: 4, color: Colors.black12),
+                                  top: BorderSide(width: 4, color: Colors.green),
+                                ),),
+                              child: SearchableDropdown.single(
+                                items: model.catList,
+                                hint: "Insurance Category",
+                                searchHint: "Insurance Category",
+                                onChanged: (category) {
+                                  _insuranceCategory = category;
+                                  model.onCategoryChanged(category);
+                                },
+                                isExpanded: true,
+                              ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: BorderDirectional(
 
-                                      listStream.add(snapshot.data);
-                                  }
+                                  bottom: BorderSide(width: 4, color: Colors.black12),
+                                  top: BorderSide(width: 4, color: Colors.green),
+                                ),),
+                              child: SearchableDropdown.single(
+                                items: model.prefferedInsDropList,
+                                hint: "Preferred Insurer",
+                                searchHint: "Preferred Insurer",
+                                onChanged: (prefedInsurer) {
+                                  _preferedInsurer = prefedInsurer;
+                                  model.onPrefferdChanged(prefedInsurer);
+                                },
+                                isExpanded: true,
+                              ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: BorderDirectional(
 
-                                    return DropdownButtonFormField(onChanged: (value) {  },items:  listStream,
-                                      validator: (value) => value.isEmpty
-                                          ? "Choose a preferred insurer"
-                                          : null,
-                                      decoration: InputDecoration(
-                                        hintText: "Preferred Insurer ",
-                                        hintStyle: TextStyle(fontSize: 18),
-                                        filled: true,
-                                        enabled: true,
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.red)),
-                                      ),);
-
-
-
-                                }),
+                                  bottom: BorderSide(width: 4, color: Colors.green),
+                                  top: BorderSide(width: 4, color: Colors.green),
+                                ),),
+                              child: SearchableDropdown.single(
+                                items: model.typDropList,
+                                hint: "Type of Insurance",
+                                searchHint: "Type of Insurance",
+                                onChanged: (type) {
+                                  _insuranceType = type;
+                                  model.onTypeChanged(type);
+                                  _genderToString = model.getGender();
+                                },
+                                isExpanded: true,
+                              ),
+                            ),
+//                                }),
 
                             //-------------------------------------------------------
                             //type of insurance
-                            DropdownButtonFormField<String>(
-                              validator: (value) => value.isEmpty
-                                  ? "Choose type of Insurer"
-                                  : null,
-                              decoration: InputDecoration(
-                                hintStyle: TextStyle(fontSize: 18),
-                                filled: true,
-                                enabled: true,
-                                hintText: "Type of Insurance",
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red)),
-                              ),
-                              items: model.typDropList,
-                              onChanged: (item1) => model.onTypeChanged(item1),
-                              icon: Icon(Icons.arrow_drop_down),
-                              onSaved: (type) {
-                                _insuranceType = type;
-                                _genderToString = model.getGender();
-                              },
-                            ),
+//                            DropdownButtonFormField<String>(
+//                              validator: (value) => value.isEmpty
+//                                  ? "Choose type of Insurer"
+//                                  : null,
+//                              decoration: InputDecoration(
+//                                hintStyle: TextStyle(fontSize: 18),
+//                                filled: true,
+//                                enabled: true,
+//                                hintText: "Type of Insurance",
+//                                enabledBorder: OutlineInputBorder(
+//                                    borderSide: BorderSide(color: Colors.red)),
+//                              ),
+//                              items: model.typDropList,
+//                              onChanged: (item1) => model.onTypeChanged(item1),
+//                              icon: Icon(Icons.arrow_drop_down),
+//                              onSaved: (type) {
+//                                _insuranceType = type;
+//                                _genderToString = model.getGender();
+//                              },
+//                            ),
                             RaisedButton(
                               onPressed: () =>
                                   Navigator.pushNamed(context, "/Home"),

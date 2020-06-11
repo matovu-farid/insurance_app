@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 
-
 import 'insurance_category.dart';
 
 enum Gender { MALE, FEMALE }
@@ -16,7 +15,6 @@ class SignupModel extends Model {
   InsuranceCategory category;
   PreferedInsurer prefferedInsurer;
   InsurancetypList insTyp;
-
 
   String categoryName;
   String preferredInsurerName;
@@ -32,8 +30,6 @@ class SignupModel extends Model {
   List<DropdownMenuItem<String>> prefferedInsDropList;
   List<DropdownMenuItem<String>> typDropList;
   List<DropdownMenuItem<String>> ageDropBracket;
-
-
 
   int commonRadio = 0;
 
@@ -64,7 +60,6 @@ class SignupModel extends Model {
 
   //category
   static List<DropdownMenuItem<String>> catListHelper(
-    
           List<String> categoryList) =>
       categoryList
           .map((itemName) => DropdownMenuItem(
@@ -89,9 +84,8 @@ class SignupModel extends Model {
               ))
           .toList();
 
-
- static List<String> get preffredListHelper =>
-     PreferedInsurer().prefferedInsList;
+  static List<String> get preffredListHelper =>
+      PreferedInsurer().prefferedInsList;
 
 //  Type
 
@@ -104,9 +98,6 @@ class SignupModel extends Model {
               ))
           .toList();
 
-
-
-
   static List<String> get typeListHelper => InsurancetypList().insuranceList;
 
   //age bracket
@@ -114,18 +105,12 @@ class SignupModel extends Model {
           List<String> ageBracketList) =>
       ageBracketList
           .map((age) => DropdownMenuItem(
-
                 value: age,
-                child: Text(age
-                ),
+                child: Text(age),
               ))
           .toList();
 
   static List<String> get ageListHelper => AgeBracket().ageBracketList;
-  
-
-
-
 
   SignupModel()
       :
@@ -134,10 +119,10 @@ class SignupModel extends Model {
         catList = catListHelper(categoryListHelper),
         categoryName = categoryListHelper[0],
 
-       //prefferred insurer
-       preferredInsurerList = preffredListHelper,
-       prefferedInsDropList = prefferedtHelper(preffredListHelper),
-       preferredInsurerName = preffredListHelper[0],
+        //prefferred insurer
+        preferredInsurerList = preffredListHelper,
+        prefferedInsDropList = prefferedtHelper(preffredListHelper),
+        preferredInsurerName = preffredListHelper[0],
 
 //type of insurance
         insuranceTypeList = typeListHelper,

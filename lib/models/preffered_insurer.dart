@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:family/models/client.dart';
 
 class PreferedInsurer {
@@ -21,8 +22,17 @@ class PreferedInsurer {
   }
 
   List<String> get prefferedInsList => _prefferedInsList;
+  Firestore _firestore = Firestore.instance;
+  sendingInsurers (){
+    for(int i;i<_prefferedInsList.length;i++){
+      _firestore.collection("Preferred Insurer").document('${_prefferedInsList[i]}');
+    }
+  }
+
+
+  }
 
 
 
 
-}
+
