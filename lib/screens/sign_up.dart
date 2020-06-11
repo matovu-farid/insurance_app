@@ -6,23 +6,16 @@ import 'package:family/Services/Authentication.dart';
 import 'package:family/Services/loadStream.dart';
 
 import 'package:family/models/client.dart';
-import 'package:family/models/clientList.dart';
-import 'package:family/models/emails_of_bosses.dart';
-import 'package:family/models/insurance_category.dart';
 
 import 'package:family/models/preffered_insurer.dart';
 import 'package:family/models/signup_state.dart';
-import 'package:family/screens/customWigets/customRow.dart';
-import 'package:family/screens/customWigets/customRow.dart';
 import 'package:family/screens/starting_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:image/image.dart' as ImageClass;
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 //TODO dispose of all controllers
@@ -41,13 +34,12 @@ class _SignupState extends State<Signup> {
 
   final List<DropdownMenuItem> listStream = List<DropdownMenuItem>();
 
-  Bloc bloc = Bloc();
 
   ScrollController _controller;
 
-  addToScoll(ScrollContext context) {}
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   TextEditingController _nameController;
   TextEditingController _emailController;
   TextEditingController _phoneController;
@@ -109,21 +101,26 @@ class _SignupState extends State<Signup> {
 
   //-------------------------------------------------------------------------------------------------
 // Method to submit and validate form fields
-  FormState get formstate => formKey.currentState;
 
-  submit(BuildContext context) async {
-    PreferedInsurer().sendingInsurers();
+
+  Future submit(BuildContext context) async {
+    FormState formstate = formKey.currentState;
+    //await PreferedInsurer().sendingInsurers();
     _name = _nameController.text;
     _emailAddress = _emailController.text;
 
     _phoneNumber = _phoneController.text;
     formstate.save();
+    FirebaseUser user = await Authorization().anonSignIn();
+
+
 
     if (formstate.validate()) {
 
       //TODO change it back to popAndpushNamed
-       Navigator.of(context).popAndPushNamed("/Home");
-      FirebaseUser user = await Authorization().anonSignIn();
+
+     // FirebaseUser user = await Authorization().anonSignIn();
+      Navigator.of(context).popAndPushNamed("/Home");
 
       String userId = user.uid;
       print(userId);
@@ -143,7 +140,7 @@ class _SignupState extends State<Signup> {
           backgroundColor: Colors.white,
           floatingActionButton: FloatingActionButton.extended(
             splashColor: Colors.white70,
-            onPressed: () => submit(context),
+            onPressed: ()async{ await submit(context);},
             backgroundColor: Colors.grey[800],
             label: Text("Submit"),
           ),
@@ -502,49 +499,6 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  set name(String value) {
-    _name = value;
-  }
-
-  get phoneNumber => _phoneNumber;
-
-  get emailAddress => _emailAddress;
-
-  get gender => _gender;
-
-  get ageBracket => _ageBracketString;
-
-  get name => _name;
-
-  set emailAddress(String value) {
-    _emailAddress = value;
-  }
-
-  set phoneNumber(String value) {
-    _phoneNumber = value;
-  }
-
-  String get insuranceType => _insuranceType;
-
-  String get insuranceCategory => _insuranceCategory;
-
-  String get preferedInsurer => _preferedInsurer;
-
-  set ageBracket(String value) {
-    _ageBracketString = value;
-  }
-
-  set preferedInsurer(String value) {
-    _preferedInsurer = value;
-  }
-
-  set insuranceCategory(String value) {
-    _insuranceCategory = value;
-  }
-
-  set insuranceType(String value) {
-    _insuranceType = value;
-  }
 
   Widget buildRow({
     BuildContext context,
